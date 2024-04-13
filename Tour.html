@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Tour Planner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .tour-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .tour-item {
+            border: 1px solid #ccc;
+            margin: 10px 0;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .tour-item:hover {
+            background-color: #f0f0f0;
+        }
+        #map {
+            width: 100%;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Virtual Tour Planner</h1>
+    <div id="tour-list-container">
+        <ul class="tour-list" id="tour-list"></ul>
+    </div>
+    <div id="map"></div>
+
+    <script>
+        // Sample tour locations
+        const tourLocations = [
+            { name: 'Eiffel Tower', lat: 48.8584, lng: 2.2945 },
+            { name: 'Statue of Liberty', lat: 40.6892, lng: -74.0445 },
+            { name: 'Great Wall of China', lat: 40.4319, lng: 116.5704 },
+            // Add more locations as needed
+        ];
+
+        // Initialize Google Maps
+        function initMap() {
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 2,
+                center: { lat: 0, lng: 0 },
+            });
+
+            // Add tour locations to the map
+            tourLocations.forEach(location => {
+                new google.maps.Marker({
+                    position: { lat: location.lat, lng: location.lng },
+                    map,
+                    title: location.name,
+                });
+            });
+        }
+
+        // Populate the tour list
+        function populateTourList() {
+            const tourList = document.getElementById("tour-list");
+            tourLocations.forEach(location => {
+                const listItem = document.createElement("li");
+                listItem.classList.add("tour-item");
+                listItem.textContent = location.name;
+                listItem.onclick = function() {
+                    // Center the map on the selected location
+                    map.setCenter({ lat: location.lat, lng: location.lng });
+                    map.setZoom(10);
+                };
+                tourList.appendChild(listItem);
+            });
+        }
+
+        // Load Google Maps API
+        function loadScript() {
+            const script = document.createElement("script");
+            script.src = "https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap";
+            script.async = true;
+            document.body.appendChild(script);
+        }
+
+        // Initialize the application
+        window.onload = function() {
+            populateTourList();
+            loadScript();
+        };
+    </script>
+</body>
+</html>
